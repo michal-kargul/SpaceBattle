@@ -55,66 +55,48 @@ void Entity::move()
 
 void Entity::processVelocity(const int deltaX, const int deltaY)
 {
+    constexpr float accelFactor = 1.005f;
+    constexpr float decelFactor = 0.99f;
+
     switch (deltaX)
     {
+    case 1: 
+        curVelocityX = std::min(curVelocityX * accelFactor + acceleration, maxVelocity);
+        break;
     case -1:
-    {
-        curVelocityX = curVelocityX - acceleration;
+        curVelocityX = std::max(curVelocityX * accelFactor - acceleration, -maxVelocity);
         break;
-    }
-    case 1:
-    {
-        curVelocityX = curVelocityX + acceleration;
-        break;
-    }
     default:
-        if (curVelocityX)
-        {
-            if (curVelocityX > 0)
-            {
-                if (curVelocityX <= acceleration / 10)
-                    curVelocityX = 0;
-                else
-                    curVelocityX = curVelocityX - (acceleration / 10);
-            }
-            else
-            {
-                if (curVelocityX >= acceleration / 10 * -1)
-                    curVelocityX = 0;
-                else
-                    curVelocityX = curVelocityX + (acceleration / 10);
-            }
-        }
+        curVelocityX *= decelFactor;
+        if (std::abs(curVelocityX) < 0.01f)
+            curVelocityX = 0.f;
         break;
     }
 
     switch (deltaY)
     {
+    case 1: 
+        curVelocityY = std::min(curVelocityY * accelFactor + acceleration, maxVelocity);
+        break;
     case -1:
-    {
-        curVelocityY = curVelocityY - acceleration;
+        curVelocityY = std::max(curVelocityY * accelFactor - acceleration, -maxVelocity);
         break;
-    }
-    case 1:
-    {
-        curVelocityY = curVelocityY + acceleration;
-        break;
-    }
     default:
-        if (curVelocityY > 0)
-        {
-            if (curVelocityY <= acceleration / 10)
-                curVelocityY = 0;
-            else
-                curVelocityY = curVelocityY - (acceleration / 10);
-        }
-        else
-        {
-            if (curVelocityY >= acceleration / 10 * -1)
-                curVelocityY = 0;
-            else
-                curVelocityY = curVelocityY + (acceleration / 10);
-        }
+        curVelocityY *= decelFactor;
+        if (std::abs(curVelocityY) < 0.01f)
+            curVelocityY = 0.f;
         break;
     }
+
+    if (curVelocityX != 0.f && curVelocityY != 0.f)
+    {
+        float speed = std::sqrt(curVelocityX * curVelocityX + curVelocityY * curVelocityY);
+        if (speed > maxVelocity)
+        {
+            float factor = maxVelocity / speed;
+            curVelocityX *= factor;
+            curVelocityY *= factor;
+        }
+    }
+
 }

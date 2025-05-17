@@ -19,7 +19,7 @@ private:
     void render();
     void update();
     void processEvents();
-    void handlePlayerInput(const sf::Event::KeyPressed* key);
+    void handlePlayerInput();
 
 private:
     sf::RenderWindow mWindow;

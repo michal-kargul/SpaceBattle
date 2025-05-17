@@ -5,7 +5,7 @@ Player::Player(const std::string& textureName, const float maxVelocity, const fl
 {
 }
 
-void Player::handleMovementInput()
+bool Player::handleMovementInput()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
     {
@@ -15,6 +15,8 @@ void Player::handleMovementInput()
             processVelocity(1, -1);
         else
             processVelocity(0, -1);
+
+        return true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
@@ -24,6 +26,8 @@ void Player::handleMovementInput()
             processVelocity(1, 1);
         else
             processVelocity(0, 1);
+
+        return true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
     {
@@ -33,6 +37,8 @@ void Player::handleMovementInput()
             processVelocity(-1, 1);
         else
             processVelocity(-1, 0);
+
+        return true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
     {
@@ -42,5 +48,9 @@ void Player::handleMovementInput()
             processVelocity(1, 1);
         else
             processVelocity(1, 0);
+
+        return true;
     }
+
+    return false;
 }

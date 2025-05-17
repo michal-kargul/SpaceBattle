@@ -6,7 +6,8 @@ Game::Game()
     : mWindow(sf::VideoMode({ 1920, 1080 }), "Space Battle")
     , mTimePerFrame(sf::seconds(1.f / 60.f))
 {
-    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame", 200, 1));
+    mWindow.setFramerateLimit(100);
+    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame", 8, 0.4));
 }
 
 void Game::run()
@@ -21,10 +22,10 @@ void Game::run()
         while (timeSinceLastUpdate > mTimePerFrame) {
             timeSinceLastUpdate -= mTimePerFrame;
 
+            handlePlayerInput();
             processEvents();
             update();
         }
-
         
         render();
     }
@@ -42,22 +43,13 @@ void Game::processEvents()
         {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 mWindow.close();
-            else
-                handlePlayerInput(keyPressed);
         }
     }
 }
 
-void Game::handlePlayerInput(const sf::Event::KeyPressed* key)
+void Game::handlePlayerInput()
 {
-    if (InList(key->scancode, { sf::Keyboard::Scancode::W , sf::Keyboard::Scancode::S , sf::Keyboard::Scancode::A , sf::Keyboard::Scancode::D }))
-    {
-        for (auto& entity : entities)
-        {
-            entity->handleMovementInput();
-        }
-        steeringButtonPressed = true;
-    }
+    steeringButtonPressed = entities.at(0)->handleMovementInput();
 }
 
 void Game::update()
@@ -69,8 +61,6 @@ void Game::update()
 
         entity->move();
     }
-
-    steeringButtonPressed = false;
 }
 
 void Game::render()

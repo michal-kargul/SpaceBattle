@@ -14,7 +14,7 @@ public:
 
     const sf::Sprite& getSprite() const;
     void move();
-    virtual void handleMovementInput() = 0;
+    virtual bool handleMovementInput() = 0;
     void processVelocity(const int deltaX = 0, const int deltaY = 0);
 
 protected:
