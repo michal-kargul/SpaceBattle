@@ -1,13 +1,12 @@
 #include "Game.h"
-#include <iostream>
 
-std::vector<Entity> Game::entities;
+std::vector<std::unique_ptr<Entity>> Game::entities;
 
 Game::Game()
     : mWindow(sf::VideoMode({ 1920, 1080 }), "Space Battle")
     , mTimePerFrame(sf::seconds(1.f / 60.f))
 {
-    entities.emplace_back("PlayerBlue_Frame");
+    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame"));
 }
 
 void Game::run()
@@ -23,7 +22,6 @@ void Game::run()
             timeSinceLastUpdate -= mTimePerFrame;
 
             processEvents();
-            //update(mTimePerFrame);
         }
 
         render();
@@ -42,24 +40,22 @@ void Game::processEvents()
         {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 mWindow.close();
+            else
+                handlePlayerInput(keyPressed);
         }
     }
 }
-//
-//void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed) {
-//    if (key == sf::Keyboard::W)      mIsMovingUp = isPressed;
-//    else if (key == sf::Keyboard::S) mIsMovingDown = isPressed;
-//    else if (key == sf::Keyboard::A) mIsMovingLeft = isPressed;
-//    else if (key == sf::Keyboard::D) mIsMovingRight = isPressed;
-//}
-//
-//void Game::update(sf::Time deltaTime) {
-//    sf::Vector2f movement(0.f, 0.f);
-//    if (mIsMovingUp)    movement.y -= 100.f;
-//    if (mIsMovingDown)  movement.y += 100.f;
-//    if (mIsMovingLeft)  movement.x -= 100.f;
-//    if (mIsMovingRight) movement.x += 100.f;
-//}
+
+void Game::handlePlayerInput(const sf::Event::KeyPressed* key)
+{
+    if (InList(key->scancode, { sf::Keyboard::Scancode::W , sf::Keyboard::Scancode::S , sf::Keyboard::Scancode::A , sf::Keyboard::Scancode::D }))
+    {
+        for (auto& entity : entities)
+        {
+            entity->handleInput(key);
+        }
+    }
+}
 
 void Game::render()
 {
@@ -67,7 +63,7 @@ void Game::render()
 
     for (const auto& entity : entities)
     {
-        mWindow.draw(entity.getSprite());
+        mWindow.draw(entity->getSprite());
     }
     mWindow.display();
 }

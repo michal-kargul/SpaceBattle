@@ -38,6 +38,8 @@ Entity::Entity(const std::string& textureName)
     sprite.emplace(textures[0]);
 }
 
+Entity::~Entity() {}
+
 const sf::Sprite& Entity::getSprite() const
 {
     return *sprite;
