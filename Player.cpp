@@ -7,50 +7,15 @@ Player::Player(const std::string& textureName, const float maxVelocity, const fl
 
 bool Player::handleMovementInput()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-            processVelocity(-1, -1);
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-            processVelocity(1, -1);
-        else
-            processVelocity(0, -1);
+    int dx = 0, dy = 0;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) dy -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) dy += 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) dx -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) dx += 1;
 
-        return true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-            processVelocity(-1, 1);
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-            processVelocity(1, 1);
-        else
-            processVelocity(0, 1);
+    if (dx == 0 && dy == 0)
+        return false;
 
-        return true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-            processVelocity(-1, -1);
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-            processVelocity(-1, 1);
-        else
-            processVelocity(-1, 0);
-
-        return true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-            processVelocity(1, -1);
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-            processVelocity(1, 1);
-        else
-            processVelocity(1, 0);
-
-        return true;
-    }
-
-    return false;
+    processVelocity(dx, dy);
+    return true;
 }
