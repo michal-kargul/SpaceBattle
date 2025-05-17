@@ -4,9 +4,9 @@
 
 class Player : public Ship {
 public:
-    Player(const std::string& textureName);
+    Player(const std::string& textureName, const float maxVelocity, const float acceleration);
 
-    void handleInput(const sf::Event::KeyPressed* key) override;
+    void handleMovementInput() override;
 private:
     
 };

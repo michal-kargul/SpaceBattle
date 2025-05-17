@@ -11,16 +11,20 @@ class Game
 public:
     Game();
     void run();
+
+public:
     static std::vector<std::unique_ptr<Entity>> entities;
 
 private:
     void render();
+    void update();
     void processEvents();
+    void handlePlayerInput(const sf::Event::KeyPressed* key);
 
 private:
     sf::RenderWindow mWindow;
     sf::Time mTimePerFrame;
-    void handlePlayerInput(const sf::Event::KeyPressed* key);
+    bool steeringButtonPressed = false;
 
     template<typename T>
     bool InList(const T& value, std::initializer_list<T> list)

@@ -9,11 +9,19 @@
 
 class Entity {
 public:
-    Entity(const std::string& textureName);
+    Entity(const std::string& textureName, const float maxVelocity, const float acceleration);
     virtual ~Entity();
 
     const sf::Sprite& getSprite() const;
-    virtual void handleInput(const sf::Event::KeyPressed* key) = 0;
+    void move();
+    virtual void handleMovementInput() = 0;
+    void processVelocity(const int deltaX = 0, const int deltaY = 0);
+
+protected:
+    const float maxVelocity;
+    float curVelocityX = 0;
+    float curVelocityY = 0;
+    const float acceleration;
 
 private:
     std::string textureName;

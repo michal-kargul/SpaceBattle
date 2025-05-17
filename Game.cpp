@@ -6,7 +6,7 @@ Game::Game()
     : mWindow(sf::VideoMode({ 1920, 1080 }), "Space Battle")
     , mTimePerFrame(sf::seconds(1.f / 60.f))
 {
-    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame"));
+    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame", 200, 1));
 }
 
 void Game::run()
@@ -22,8 +22,10 @@ void Game::run()
             timeSinceLastUpdate -= mTimePerFrame;
 
             processEvents();
+            update();
         }
 
+        
         render();
     }
 }
@@ -52,9 +54,23 @@ void Game::handlePlayerInput(const sf::Event::KeyPressed* key)
     {
         for (auto& entity : entities)
         {
-            entity->handleInput(key);
+            entity->handleMovementInput();
         }
+        steeringButtonPressed = true;
     }
+}
+
+void Game::update()
+{
+    for (auto& entity : entities)
+    {
+        if (!steeringButtonPressed)
+            entity->processVelocity();
+
+        entity->move();
+    }
+
+    steeringButtonPressed = false;
 }
 
 void Game::render()

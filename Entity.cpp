@@ -1,7 +1,7 @@
 #include "Entity.h"
 
-Entity::Entity(const std::string& textureName)
-    : textureName(textureName)
+Entity::Entity(const std::string& textureName, const float maxVelocity, const float acceleration)
+    : textureName(textureName), maxVelocity(maxVelocity), acceleration(acceleration)
 {
     const std::string folder = "assets/";
     const std::string prefix = textureName + "_";
@@ -43,4 +43,78 @@ Entity::~Entity() {}
 const sf::Sprite& Entity::getSprite() const
 {
     return *sprite;
+}
+
+void Entity::move()
+{
+    if (sprite && (curVelocityX || curVelocityY))
+    {
+        sprite->move({ curVelocityX, curVelocityY });
+    }
+}
+
+void Entity::processVelocity(const int deltaX, const int deltaY)
+{
+    switch (deltaX)
+    {
+    case -1:
+    {
+        curVelocityX = curVelocityX - acceleration;
+        break;
+    }
+    case 1:
+    {
+        curVelocityX = curVelocityX + acceleration;
+        break;
+    }
+    default:
+        if (curVelocityX)
+        {
+            if (curVelocityX > 0)
+            {
+                if (curVelocityX <= acceleration / 10)
+                    curVelocityX = 0;
+                else
+                    curVelocityX = curVelocityX - (acceleration / 10);
+            }
+            else
+            {
+                if (curVelocityX >= acceleration / 10 * -1)
+                    curVelocityX = 0;
+                else
+                    curVelocityX = curVelocityX + (acceleration / 10);
+            }
+        }
+        break;
+    }
+
+    switch (deltaY)
+    {
+    case -1:
+    {
+        curVelocityY = curVelocityY - acceleration;
+        break;
+    }
+    case 1:
+    {
+        curVelocityY = curVelocityY + acceleration;
+        break;
+    }
+    default:
+        if (curVelocityY > 0)
+        {
+            if (curVelocityY <= acceleration / 10)
+                curVelocityY = 0;
+            else
+                curVelocityY = curVelocityY - (acceleration / 10);
+        }
+        else
+        {
+            if (curVelocityY >= acceleration / 10 * -1)
+                curVelocityY = 0;
+            else
+                curVelocityY = curVelocityY + (acceleration / 10);
+        }
+        break;
+    }
 }
