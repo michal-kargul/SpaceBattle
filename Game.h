@@ -4,6 +4,7 @@
 #include <SFML/Window.hpp>
 #include "Player.h"
 #include "Entity.h"
+#include "Particle.h"
 #include <iostream>
 
 class Game
@@ -13,7 +14,8 @@ public:
     void run();
 
 public:
-    static std::vector<std::unique_ptr<Entity>> entities;
+    std::vector<Player> players;
+    std::vector<Particle> particles;
 
 private:
     void render();

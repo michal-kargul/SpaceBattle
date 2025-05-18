@@ -1,13 +1,14 @@
 #include "Game.h"
 
-std::vector<std::unique_ptr<Entity>> Game::entities;
-
 Game::Game()
     : mWindow(sf::VideoMode({ 1920, 1080 }), "Space Battle")
     , mTimePerFrame(sf::seconds(1.f / 60.f))
 {
     mWindow.setFramerateLimit(100);
-    Game::entities.push_back(std::make_unique<Player>("PlayerBlue_Frame", 8, 0.4));
+
+    players.emplace_back("PlayerBlue_Frame", 8, 0.4);
+    players.at(0).setSprite().setPosition({ 100,200 });
+    particles.emplace_back("Exhaust_Frame", 8, 0.4, players.at(0).getSprite(), 32, -2);
 }
 
 void Game::run()
@@ -49,19 +50,26 @@ void Game::processEvents()
 
 void Game::handlePlayerInput()
 {
-    steeringButtonPressed = entities.at(0)->handleMovementInput();
+    steeringButtonPressed = players.at(0).handleMovementInput();
 }
 
 void Game::update(float deltaTime)
 {
-    for (auto& entity : entities)
+    for (auto& player : players)
     {
         if (!steeringButtonPressed)
-            entity->processVelocity();
+            player.processVelocity();
 
-        entity->rotate(entity->calculateAngle(entity->getSprite().getPosition(), mWindow));
-        entity->move();
-        entity->animate(entity->getTextureVector(), entity->getSprite(), 0.07f, deltaTime); 
+        player.rotate(player.calculateAngle(player.getSprite().getPosition(), mWindow));
+        player.move();
+        player.animate(player.getTextureVector(), player.setSprite(), 0.07f, deltaTime); 
+    }
+
+    for (auto& particle : particles)
+    {
+        particle.rotate();
+        particle.move();
+        particle.animate(particle.getTextureVector(), particle.setSprite(), 0.07f, deltaTime);
     }
 }
 
@@ -69,9 +77,14 @@ void Game::render()
 {
     mWindow.clear();
 
-    for (const auto& entity : entities)
+    for (auto& player : players)
     {
-        mWindow.draw(entity->getSprite());
+        mWindow.draw(player.getSprite());
+    }
+
+    for (auto& particle : particles)
+    {
+        mWindow.draw(particle.getSprite());
     }
     mWindow.display();
 }

@@ -44,9 +44,19 @@ Entity::Entity(const std::string& textureName, const float maxVelocity, const fl
 
 Entity::~Entity() {}
 
-sf::Sprite& Entity::getSprite()
+const sf::Sprite& Entity::getSprite() const
 {
     return *sprite;
+}
+
+sf::Sprite& Entity::setSprite()
+{
+    return *sprite;
+}
+
+const sf::Vector2f& Entity::getVelocity() const
+{
+    return { curVelocityX, curVelocityY };
 }
 
 void Entity::move()
