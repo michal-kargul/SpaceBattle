@@ -6,7 +6,7 @@ class Player : public Ship {
 public:
     Player(const std::string& textureName, const float maxVelocity, const float acceleration);
 
-    bool handleMovementInput() override;
+    const bool handleMovementInput() override;
 private:
     
 };

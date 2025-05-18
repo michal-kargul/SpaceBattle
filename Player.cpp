@@ -5,7 +5,7 @@ Player::Player(const std::string& textureName, const float maxVelocity, const fl
 {
 }
 
-bool Player::handleMovementInput()
+const bool Player::handleMovementInput()
 {
     int dx = 0, dy = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) dy -= 1;

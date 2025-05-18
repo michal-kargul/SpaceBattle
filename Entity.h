@@ -14,7 +14,9 @@ public:
 
     const sf::Sprite& getSprite() const;
     void move();
-    virtual bool handleMovementInput() = 0;
+    void rotate(const float angle);
+    virtual const bool handleMovementInput() = 0;
+    virtual const float calculateAngle(const sf::Vector2<float>& currPos, const sf::RenderWindow& relative) = 0;
     void processVelocity(const int deltaX = 0, const int deltaY = 0);
 
 protected:

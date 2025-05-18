@@ -59,6 +59,7 @@ void Game::update()
         if (!steeringButtonPressed)
             entity->processVelocity();
 
+        entity->rotate(entity->calculateAngle(entity->getSprite().getPosition(), mWindow));
         entity->move();
     }
 }

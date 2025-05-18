@@ -35,7 +35,11 @@ Entity::Entity(const std::string& textureName, const float maxVelocity, const fl
     if (textures.empty())
         throw std::runtime_error("Textures not found for: " + textureName);
 
-    sprite.emplace(textures[0]);
+    const auto& baseTexture = textures.at(0);
+
+    sprite.emplace(baseTexture);
+
+    sprite->setOrigin({ static_cast<float>(baseTexture.getSize().x) / 2, static_cast<float>(baseTexture.getSize().y) / 2 });
 }
 
 Entity::~Entity() {}
@@ -50,6 +54,14 @@ void Entity::move()
     if (sprite && (curVelocityX || curVelocityY))
     {
         sprite->move({ curVelocityX, curVelocityY });
+    }
+}
+
+void Entity::rotate(const float angle)
+{
+    if (sprite && (sprite->getRotation().asDegrees()) != angle)
+    {
+        sprite->setRotation(sf::degrees(angle));
     }
 }
 
