@@ -44,7 +44,7 @@ Entity::Entity(const std::string& textureName, const float maxVelocity, const fl
 
 Entity::~Entity() {}
 
-const sf::Sprite& Entity::getSprite() const
+sf::Sprite& Entity::getSprite()
 {
     return *sprite;
 }
@@ -111,4 +111,25 @@ void Entity::processVelocity(const int deltaX, const int deltaY)
         }
     }
 
+}
+
+const std::vector<sf::Texture>& Entity::getTextureVector() const
+{
+    return textures;
+}
+
+void Entity::animate(const std::vector<sf::Texture>& textures, sf::Sprite& sprite, float animationTime, float deltaTime)
+{
+    animationTimer += deltaTime;
+
+    if (animationTimer >= animationTime)
+    {
+        animationTimer = 0.f;
+
+        sprite.setTexture(textures.at(animateGameLoopIteration));
+
+        animateGameLoopIteration++;
+        if (animateGameLoopIteration >= textures.size())
+            animateGameLoopIteration = 0;
+    }
 }

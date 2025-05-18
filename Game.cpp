@@ -24,7 +24,7 @@ void Game::run()
 
             handlePlayerInput();
             processEvents();
-            update();
+            update(dt.asSeconds());
         }
         
         render();
@@ -52,7 +52,7 @@ void Game::handlePlayerInput()
     steeringButtonPressed = entities.at(0)->handleMovementInput();
 }
 
-void Game::update()
+void Game::update(float deltaTime)
 {
     for (auto& entity : entities)
     {
@@ -61,6 +61,7 @@ void Game::update()
 
         entity->rotate(entity->calculateAngle(entity->getSprite().getPosition(), mWindow));
         entity->move();
+        entity->animate(entity->getTextureVector(), entity->getSprite(), 0.07f, deltaTime); 
     }
 }
 

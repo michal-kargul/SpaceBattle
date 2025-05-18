@@ -17,7 +17,7 @@ public:
 
 private:
     void render();
-    void update();
+    void update(float deltaTime);
     void processEvents();
     void handlePlayerInput();
 
