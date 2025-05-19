@@ -6,13 +6,15 @@ Ship::Ship(const std::string& textureName, const float maxVelocity, const float 
     
 }
 
-const float Ship::calculateAngle(const sf::Vector2<float>& currPos, const sf::RenderWindow& relative)
+const float Ship::calculateAngle(const sf::Vector2f& currPos, const sf::RenderWindow& relative)
 {
-    float x = sf::Mouse::getPosition(relative).x - currPos.x;
-    float y = sf::Mouse::getPosition(relative).y - currPos.y;
+    sf::Vector2f mouseWorld = relative.mapPixelToCoords(sf::Mouse::getPosition(relative));
+
+    float x = mouseWorld.x - currPos.x;
+    float y = mouseWorld.y - currPos.y;
 
     float angleRad = std::atan2(y, x);
-    angleDeg = (angleRad * 180.f / 3.14159265f) + 90;
+    float angleDeg = (angleRad * 180.f / 3.14159265f) + 90.f;
 
     if (angleDeg < 0.f)
         angleDeg += 360.f;

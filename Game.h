@@ -28,6 +28,8 @@ private:
     sf::Time mTimePerFrame;
     bool steeringButtonPressed = false;
 
+    sf::View view;
+
     template<typename T>
     bool InList(const T& value, std::initializer_list<T> list)
     {

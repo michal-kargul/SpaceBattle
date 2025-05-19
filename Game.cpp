@@ -15,6 +15,9 @@ void Game::run()
 {
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    
+    view.setCenter({960,540}); // œrodek widoku
+    view.setSize({1920, 1080});   // rozmiar widoku
 
     while (mWindow.isOpen()) {
         sf::Time dt = clock.restart();
@@ -44,6 +47,10 @@ void Game::processEvents()
         {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 mWindow.close();
+            if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadPlus)
+                view.zoom(1.1);
+            if (keyPressed->scancode == sf::Keyboard::Scancode::NumpadMinus)
+                view.zoom(0.9);
         }
     }
 }
@@ -58,7 +65,10 @@ void Game::update(float deltaTime)
     for (auto& player : players)
     {
         if (!steeringButtonPressed)
+        {
             player.processVelocity();
+            //
+        }
 
         player.rotate(player.calculateAngle(player.getSprite().getPosition(), mWindow));
         player.move();
@@ -76,6 +86,7 @@ void Game::update(float deltaTime)
 void Game::render()
 {
     mWindow.clear();
+    mWindow.setView(view);
 
     for (auto& player : players)
     {
