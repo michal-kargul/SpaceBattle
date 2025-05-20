@@ -6,8 +6,29 @@ Game::Game()
 {
     mWindow.setFramerateLimit(100);
 
+    if (!backgroundTexture.loadFromFile("assets/Nebula Blue.png"))
+        std::cerr << "Couldn't load texture: " << "\n";
+
+    backgroundSprite = new sf::Sprite(backgroundTexture);
+
+    mapSize = backgroundTexture.getSize();
+    backgroundSprite->setOrigin({
+        static_cast<float>(mapSize.x) / 2.f,
+        static_cast<float>(mapSize.y) / 2.f
+        });
+
+    backgroundSprite->setPosition({ 0.f, 0.f });
+
+    sf::Vector2f windowSize = {
+        static_cast<float>(mWindow.getSize().x),
+        static_cast<float>(mWindow.getSize().y)
+    };
+
+    view.setSize(windowSize);
+    view.setCenter({ 0.f, 0.f });
+    mWindow.setView(view);
+
     players.emplace_back("PlayerBlue_Frame", 8, 0.4);
-    players.at(0).setSprite().setPosition({ 100,200 });
     particles.emplace_back("Exhaust_Frame", 8, 0.4, players.at(0).getSprite(), 32, -2);
 }
 
@@ -15,9 +36,6 @@ void Game::run()
 {
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    
-    view.setCenter({960,540}); // œrodek widoku
-    view.setSize({1920, 1080});   // rozmiar widoku
 
     while (mWindow.isOpen()) {
         sf::Time dt = clock.restart();
@@ -26,6 +44,7 @@ void Game::run()
         while (timeSinceLastUpdate > mTimePerFrame) {
             timeSinceLastUpdate -= mTimePerFrame;
 
+            processCameraZoom();
             handlePlayerInput();
             processEvents();
             update(dt.asSeconds());
@@ -33,6 +52,33 @@ void Game::run()
         
         render();
     }
+}
+
+void Game::processCameraZoom()
+{
+    view.setCenter(getAveragePosition());
+}
+
+const sf::Vector2f Game::getAveragePosition() const
+{
+    float sumPosX=0;
+    float sumPosY=0;
+
+    for (const auto& player : players)
+    {
+        sumPosX += player.getSprite().getPosition().x;
+        sumPosY += player.getSprite().getPosition().y;
+    }
+
+    for (const auto& ship : ships)
+    {
+        sumPosX += ship.getSprite().getPosition().x;
+        sumPosY += ship.getSprite().getPosition().y;
+    }
+
+    std::cout << "avg Pos: " << sumPosX / (ships.size() + players.size()) << " avg PosY: " << sumPosY / (ships.size() + players.size()) << std::endl;
+
+    return { sumPosX / (ships.size() + players.size()) , sumPosY / (ships.size() + players.size())};
 }
 
 void Game::processEvents()
@@ -65,10 +111,7 @@ void Game::update(float deltaTime)
     for (auto& player : players)
     {
         if (!steeringButtonPressed)
-        {
             player.processVelocity();
-            //
-        }
 
         player.rotate(player.calculateAngle(player.getSprite().getPosition(), mWindow));
         player.move();
@@ -87,6 +130,7 @@ void Game::render()
 {
     mWindow.clear();
     mWindow.setView(view);
+    mWindow.draw(*backgroundSprite);
 
     for (auto& player : players)
     {
