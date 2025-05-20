@@ -14,7 +14,7 @@ const float Ship::calculateAngle(const sf::Vector2f& currPos, const sf::RenderWi
     float y = mouseWorld.y - currPos.y;
 
     float angleRad = std::atan2(y, x);
-    float angleDeg = (angleRad * 180.f / 3.14159265f) + 90.f;
+    angleDeg = (angleRad * 180.f / 3.14159265f) + 90.f;
 
     if (angleDeg < 0.f)
         angleDeg += 360.f;
