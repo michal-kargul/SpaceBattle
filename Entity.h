@@ -23,6 +23,8 @@ public:
     void processVelocity(const int deltaX = 0, const int deltaY = 0);
     const std::vector<sf::Texture>& getTextureVector() const;
 
+    bool isAlive = true;
+
 protected:
     const float maxVelocity;
     float curVelocityX = 0;
