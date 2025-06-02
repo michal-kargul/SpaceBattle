@@ -76,7 +76,7 @@ const sf::Vector2f Game::getAveragePosition() const
         sumPosY += ship.getSprite().getPosition().y;
     }
 
-    std::cout << "avg Pos: " << sumPosX / (ships.size() + players.size()) << " avg PosY: " << sumPosY / (ships.size() + players.size()) << std::endl;
+    //std::cout << "avg Pos: " << sumPosX / (ships.size() + players.size()) << " avg PosY: " << sumPosY / (ships.size() + players.size()) << std::endl;
 
     return { sumPosX / (ships.size() + players.size()) , sumPosY / (ships.size() + players.size())};
 }

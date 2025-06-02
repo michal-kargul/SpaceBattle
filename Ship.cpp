@@ -42,7 +42,9 @@ void Ship::animate(const std::vector<sf::Texture>& textures, sf::Sprite& sprite,
     const bool isTiltingLeft = localX < -0.1f;
     const bool isTiltingRight = localX > 0.1f;
 
-    if (isNotMoving || isMovingStraight)
+    float speed = std::sqrt(dx * dx + dy * dy);
+
+    if (speed < 0.01f || std::abs(localX) < 0.01f)
     {
         if (animateGameLoopIteration > 0)
             animateGameLoopIteration--;
@@ -52,23 +54,34 @@ void Ship::animate(const std::vector<sf::Texture>& textures, sf::Sprite& sprite,
         sprite.setTexture(textures.at(animateGameLoopIteration));
         sprite.setScale(sf::Vector2f(1.f, 1.f));
     }
-    else if (isTiltingLeft || isTiltingRight)
+    else
     {
-        const float targetScaleX = isTiltingLeft ? 1.f : -1.f;
-        const float currentScaleX = sprite.getScale().x;
+        float sideIntensity = localX / speed;
+        float intensityAbs = std::abs(sideIntensity);
 
-        if ((isTiltingLeft && currentScaleX < 0.f) || (isTiltingRight && currentScaleX > 0.f))
+        float targetScaleX = (sideIntensity < 0.f) ? 1.f : -1.f;
+        int targetIndex = static_cast<int>(std::round(intensityAbs * maxIndex));
+        targetIndex = std::clamp(targetIndex, 0, maxIndex);
+
+        float currentScaleX = sprite.getScale().x;
+
+        if (currentScaleX != targetScaleX && animateGameLoopIteration > 0)
         {
-            if (animateGameLoopIteration > 0)
-                animateGameLoopIteration--;
+            animateGameLoopIteration--;
         }
         else
         {
-            if (animateGameLoopIteration < maxIndex)
+            if (currentScaleX != targetScaleX && animateGameLoopIteration == 0)
+            {
+                sprite.setScale(sf::Vector2f(targetScaleX, 1.f));
+            }
+
+            if (animateGameLoopIteration < targetIndex)
                 animateGameLoopIteration++;
+            else if (animateGameLoopIteration > targetIndex)
+                animateGameLoopIteration--;
         }
 
         sprite.setTexture(textures.at(animateGameLoopIteration));
-        sprite.setScale(sf::Vector2f(targetScaleX, 1.f));
     }
 }

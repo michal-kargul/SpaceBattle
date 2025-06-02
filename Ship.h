@@ -16,5 +16,5 @@ protected:
     int dy=0;
 
 private:
-    
+    sf::Vector2f lastPosition;
 };
