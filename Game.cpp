@@ -73,7 +73,7 @@ void Game::processCameraZoom()
     view.setCenter(getAveragePosition());
 }
 
-const sf::Vector2f Game::getAveragePosition() const
+sf::Vector2f Game::getAveragePosition() const
 {
     float sumPosX=0;
     float sumPosY=0;
