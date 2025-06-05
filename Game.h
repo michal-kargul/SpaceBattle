@@ -1,9 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
+#include <memory>
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 #include "Player.h"
 #include "Entity.h"
 #include "Particle.h"
@@ -16,10 +15,6 @@ public:
     Game();
     void run();
 
-public:
-    std::vector<Player> players;
-    std::vector<Particle> particles;
-    std::vector<Ship> ships;
 private:
     void render();
     void update(float deltaTime);
@@ -27,7 +22,7 @@ private:
     void handlePlayerInput();
     void processCameraZoom();
     void loadTextures();
-    const sf::Vector2f getAveragePosition() const;
+    sf::Vector2f getAveragePosition() const;
 
 private:
     sf::RenderWindow mWindow;
@@ -37,11 +32,9 @@ private:
     sf::Vector2u mapSize;
     std::map<TextureType, Texture> loadedTextures;
 
+    std::vector<Player> players;
+    std::vector<Particle> particles;
+    std::vector<Ship> ships;
+
     bool steeringButtonPressed = false;
-    
-    template<typename T>
-    bool InList(const T& value, std::initializer_list<T> list)
-    {
-        return std::find(list.begin(), list.end(), value) != list.end();
-    }
 };
