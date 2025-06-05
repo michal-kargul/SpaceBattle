@@ -33,7 +33,7 @@ private:
     sf::RenderWindow mWindow;
     sf::Time mTimePerFrame;
     sf::View view;
-    sf::Sprite* backgroundSprite;
+    std::unique_ptr<sf::Sprite> backgroundSprite;
     sf::Vector2u mapSize;
     std::map<TextureType, Texture> loadedTextures;
 

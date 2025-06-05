@@ -9,7 +9,7 @@ Game::Game()
     mWindow.setFramerateLimit(100);
 
     const sf::Texture& backgroundTex = loadedTextures.at(BACKGROUND).getTextures().back();
-    backgroundSprite = new sf::Sprite(backgroundTex);
+    backgroundSprite = std::make_unique<sf::Sprite>(backgroundTex);
 
     mapSize = backgroundTex.getSize();
     backgroundSprite->setOrigin({
