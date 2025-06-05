@@ -4,14 +4,14 @@ Game::Game()
     : mWindow(sf::VideoMode({ 1920, 1080 }), "Space Battle")
     , mTimePerFrame(sf::seconds(1.f / 60.f))
 {
+    loadTextures();
+
     mWindow.setFramerateLimit(100);
 
-    if (!backgroundTexture.loadFromFile("assets/Nebula Blue.png"))
-        std::cerr << "Couldn't load texture: " << "\n";
+    const sf::Texture& backgroundTex = loadedTextures.at(BACKGROUND).getTextures().back();
+    backgroundSprite = new sf::Sprite(backgroundTex);
 
-    backgroundSprite = new sf::Sprite(backgroundTexture);
-
-    mapSize = backgroundTexture.getSize();
+    mapSize = backgroundTex.getSize();
     backgroundSprite->setOrigin({
         static_cast<float>(mapSize.x) / 2.f,
         static_cast<float>(mapSize.y) / 2.f
@@ -27,6 +27,9 @@ Game::Game()
     view.setSize(windowSize);
     view.setCenter({ 0.f, 0.f });
     mWindow.setView(view);
+
+    ships.emplace_back("PlayerRed_Frame", 8, 0.4);
+    //particles.emplace_back("Exhaust_Frame", 8, 0.4, ships.at(0).getSprite(), 32, -2);
 
     players.emplace_back("PlayerBlue_Frame", 8, 0.4);
     particles.emplace_back("Exhaust_Frame", 8, 0.4, players.at(0).getSprite(), 32, -2);
@@ -54,6 +57,17 @@ void Game::run()
     }
 }
 
+void Game::loadTextures()
+{
+    for (const auto& [type, name] : textureMap)
+    {
+        std::cout << "Loading texture: " << name << std::endl;
+
+        Texture tex(name);
+        loadedTextures.emplace(type, std::move(tex));
+    }
+}
+
 void Game::processCameraZoom()
 {
     view.setCenter(getAveragePosition());
@@ -75,8 +89,6 @@ const sf::Vector2f Game::getAveragePosition() const
         sumPosX += ship.getSprite().getPosition().x;
         sumPosY += ship.getSprite().getPosition().y;
     }
-
-    //std::cout << "avg Pos: " << sumPosX / (ships.size() + players.size()) << " avg PosY: " << sumPosY / (ships.size() + players.size()) << std::endl;
 
     return { sumPosX / (ships.size() + players.size()) , sumPosY / (ships.size() + players.size())};
 }
@@ -135,6 +147,11 @@ void Game::render()
     for (auto& player : players)
     {
         mWindow.draw(player.getSprite());
+    }
+
+    for (auto& ship : ships)
+    {
+        mWindow.draw(ship.getSprite());
     }
 
     for (auto& particle : particles)

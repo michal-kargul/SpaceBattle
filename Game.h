@@ -1,11 +1,14 @@
 #pragma once
 
+#include <iostream>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "Player.h"
 #include "Entity.h"
 #include "Particle.h"
-#include <iostream>
+#include "Codes.h"
+#include "Texture.h"
 
 class Game
 {
@@ -23,16 +26,16 @@ private:
     void processEvents();
     void handlePlayerInput();
     void processCameraZoom();
+    void loadTextures();
     const sf::Vector2f getAveragePosition() const;
 
 private:
     sf::RenderWindow mWindow;
     sf::Time mTimePerFrame;
     sf::View view;
-    sf::Texture backgroundTexture;
     sf::Sprite* backgroundSprite;
     sf::Vector2u mapSize;
-    sf::Vector2f averagePosition;
+    std::map<TextureType, Texture> loadedTextures;
 
     bool steeringButtonPressed = false;
     
