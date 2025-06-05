@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(const std::string& textureName, const float maxVelocity, const float acceleration)
-    : Ship(textureName, maxVelocity, acceleration)
+Player::Player(const std::vector<sf::Texture>& textures, const float maxVelocity, const float acceleration)
+    : Ship(textures, maxVelocity, acceleration)
 {
 }
 

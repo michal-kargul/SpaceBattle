@@ -1,7 +1,7 @@
 #include "Ship.h"
 
-Ship::Ship(const std::string& textureName, const float maxVelocity, const float acceleration)
-    : Entity(textureName, maxVelocity, acceleration)
+Ship::Ship(const std::vector<sf::Texture>& textures, const float maxVelocity, const float acceleration)
+    : Entity(textures, maxVelocity, acceleration)
 {
     
 }

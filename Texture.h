@@ -9,6 +9,7 @@
 class Texture
 {
 public:
+    Texture();
     Texture(const std::string& textureName);
 
     // Move allowed

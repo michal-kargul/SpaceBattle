@@ -28,11 +28,11 @@ Game::Game()
     view.setCenter({ 0.f, 0.f });
     mWindow.setView(view);
 
-    ships.emplace_back("PlayerRed_Frame", 8, 0.4);
-    //particles.emplace_back("Exhaust_Frame", 8, 0.4, ships.at(0).getSprite(), 32, -2);
+    ships.emplace_back(loadedTextures[SHIP_RED].getTextures(), 8, 0.4);
+    particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, ships.at(0).getSprite(), 32, -2);
 
-    players.emplace_back("PlayerBlue_Frame", 8, 0.4);
-    particles.emplace_back("Exhaust_Frame", 8, 0.4, players.at(0).getSprite(), 32, -2);
+    players.emplace_back(loadedTextures[SHIP_BLUE].getTextures(), 8, 0.4);
+    particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, players.at(0).getSprite(), 32, -2);
 }
 
 void Game::run()

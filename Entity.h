@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <optional>
@@ -6,10 +7,11 @@
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
+#include <functional>  // <== DODANE
 
 class Entity {
 public:
-    Entity(const std::string& textureName, const float maxVelocity, const float acceleration);
+    Entity(const std::vector<sf::Texture>& textures, float maxVelocity, float acceleration);
     virtual ~Entity();
 
     const sf::Sprite& getSprite() const;
@@ -38,5 +40,6 @@ private:
     std::string textureName;
     sf::Texture texture;
     std::optional<sf::Sprite> sprite;
-    std::vector<sf::Texture> textures;
+
+    std::reference_wrapper<const std::vector<sf::Texture>> textures;
 };

@@ -1,5 +1,9 @@
 #include "Texture.h"
 
+Texture::Texture()
+{
+}
+
 Texture::Texture(const std::string& textureName) : textureName(textureName)
 {
     const std::string folder = "assets/";
