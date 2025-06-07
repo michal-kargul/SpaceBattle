@@ -29,10 +29,15 @@ Game::Game()
     mWindow.setView(view);
 
     ships.emplace_back(loadedTextures[SHIP_RED].getTextures(), 8, 0.4);
-    particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, ships.at(0).getSprite(), 32, -2);
 
-    players.emplace_back(loadedTextures[SHIP_BLUE].getTextures(), 8, 0.4);
-    particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, players.at(0).getSprite(), 32, -2);
+    players.emplace_back(loadedTextures[SHIP_BLUE].getTextures(), 8, 0.4, PlayerControl::PLAYER_1);
+    players.emplace_back(loadedTextures[SHIP_BLUE].getTextures(), 8, 0.4, PlayerControl::PLAYER_2);
+
+    for (const auto& player : players)
+        particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, player.getSprite(), 32, -2);
+
+    for (const auto& ship : ships)
+        particles.emplace_back(loadedTextures[SHIP_EXHAUST].getTextures(), 8, 0.4, ship.getSprite(), 32, -2);
 }
 
 void Game::run()
@@ -70,27 +75,100 @@ void Game::loadTextures()
 
 void Game::processCameraZoom()
 {
-    view.setCenter(getAveragePosition());
+    const float innerMargin = 300.f;
+    const float outerMargin = 100.f;
+
+    sf::Vector2f windowSize(
+        static_cast<float>(mWindow.getSize().x),
+        static_cast<float>(mWindow.getSize().y)
+    );
+    sf::Vector2f viewSize = windowSize * currentZoom;
+
+    sf::Vector2f center = getCenterCameraPosition();
+
+    bool outsideOuter = false;
+    bool insideInner = true;
+
+    auto checkMargins = [&](const sf::Vector2f& pos, bool affectsZoomOut)
+        {
+            float dx = std::abs(pos.x - center.x);
+            float dy = std::abs(pos.y - center.y);
+
+            if (affectsZoomOut)
+            {
+                if (dx > (viewSize.x / 2.f - outerMargin) || dy > (viewSize.y / 2.f - outerMargin))
+                    outsideOuter = true;
+            }
+
+            if (dx > (viewSize.x / 2.f - innerMargin) || dy > (viewSize.y / 2.f - innerMargin))
+                insideInner = false;
+        };
+
+    for (const auto& player : players)
+        checkMargins(player.getSprite().getPosition(), true);
+
+    for (const auto& ship : ships)
+        checkMargins(ship.getSprite().getPosition(), true);
+
+    float targetZoom = currentZoom;
+
+    if (outsideOuter && view.getSize().x < mapSize.x)
+        targetZoom *= 1.02f;
+    else if (insideInner && currentZoom > 1.01f)
+        targetZoom *= 0.98f;
+
+    targetZoom = std::clamp(targetZoom, 1.0f, 3.0f);
+
+    float smoothing = 0.17f;
+    currentZoom += (targetZoom - currentZoom) * smoothing;
+
+    view.setSize(windowSize * currentZoom);
+
+    float halfWidth = view.getSize().x / 2.f;
+    float halfHeight = view.getSize().y / 2.f;
+
+    float leftLimit = -static_cast<float>(mapSize.x) / 2.f + halfWidth;
+    float rightLimit = static_cast<float>(mapSize.x) / 2.f - halfWidth;
+    float topLimit = -static_cast<float>(mapSize.y) / 2.f + halfHeight;
+    float bottomLimit = static_cast<float>(mapSize.y) / 2.f - halfHeight;
+
+    if (leftLimit <= rightLimit)
+        center.x = std::clamp(center.x, leftLimit, rightLimit);
+    else
+        center.x = (leftLimit + rightLimit) / 2.f;
+
+    if (topLimit <= bottomLimit)
+        center.y = std::clamp(center.y, topLimit, bottomLimit);
+    else
+        center.y = (topLimit + bottomLimit) / 2.f;
+
+    view.setCenter(center);
 }
 
-sf::Vector2f Game::getAveragePosition() const
+sf::Vector2f Game::getCenterCameraPosition() const
 {
-    float sumPosX=0;
-    float sumPosY=0;
+    float sumPosX = 0.f;
+    float sumPosY = 0.f;
+    size_t count = 0;
 
     for (const auto& player : players)
     {
         sumPosX += player.getSprite().getPosition().x;
         sumPosY += player.getSprite().getPosition().y;
+        ++count;
     }
 
     for (const auto& ship : ships)
     {
         sumPosX += ship.getSprite().getPosition().x;
         sumPosY += ship.getSprite().getPosition().y;
+        ++count;
     }
 
-    return { sumPosX / (ships.size() + players.size()) , sumPosY / (ships.size() + players.size())};
+    if (count == 0)
+        return { 0.f, 0.f };
+
+    return { sumPosX / count, sumPosY / count };
 }
 
 void Game::processEvents()
@@ -115,7 +193,8 @@ void Game::processEvents()
 
 void Game::handlePlayerInput()
 {
-    steeringButtonPressed = players.at(0).handleMovementInput();
+    for (auto& player : players)
+        steeringButtonPressed = player.handleMovementInput();
 }
 
 void Game::update(float deltaTime)

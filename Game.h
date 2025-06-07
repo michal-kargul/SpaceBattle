@@ -2,12 +2,22 @@
 
 #include <vector>
 #include <memory>
+#include <cmath>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Entity.h"
 #include "Particle.h"
 #include "Codes.h"
 #include "Texture.h"
+
+struct CameraState
+{
+    bool atLeftEdge;
+    bool atRightEdge;
+    bool atTopEdge;
+    bool atBottomEdge;
+};
 
 class Game
 {
@@ -22,7 +32,7 @@ private:
     void handlePlayerInput();
     void processCameraZoom();
     void loadTextures();
-    sf::Vector2f getAveragePosition() const;
+    sf::Vector2f getCenterCameraPosition() const;
 
 private:
     sf::RenderWindow mWindow;
@@ -30,11 +40,14 @@ private:
     sf::View view;
     std::unique_ptr<sf::Sprite> backgroundSprite;
     sf::Vector2u mapSize;
-    std::map<TextureType, Texture> loadedTextures;
+    CameraState worldCameraState;
 
+    std::map<TextureType, Texture> loadedTextures;
     std::vector<Player> players;
     std::vector<Particle> particles;
     std::vector<Ship> ships;
 
     bool steeringButtonPressed = false;
+    float currentZoom = 1.0f;
+
 };

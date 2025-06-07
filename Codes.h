@@ -12,4 +12,10 @@ enum TextureType
 	SHIP_EXHAUST,
 };
 
+enum PlayerControl
+{
+	PLAYER_1,
+	PLAYER_2,
+};
+
 extern std::map<TextureType, std::string> textureMap;
