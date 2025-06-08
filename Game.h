@@ -11,14 +11,6 @@
 #include "Codes.h"
 #include "Texture.h"
 
-struct CameraState
-{
-    bool atLeftEdge;
-    bool atRightEdge;
-    bool atTopEdge;
-    bool atBottomEdge;
-};
-
 class Game
 {
 public:
@@ -40,7 +32,6 @@ private:
     sf::View view;
     std::unique_ptr<sf::Sprite> backgroundSprite;
     sf::Vector2u mapSize;
-    CameraState worldCameraState;
 
     std::map<TextureType, Texture> loadedTextures;
     std::vector<Player> players;

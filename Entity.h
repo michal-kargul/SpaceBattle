@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <iostream>
 #include <algorithm>
-#include <functional>  // <== DODANE
+#include <functional>
 
 class Entity {
 public:
@@ -24,8 +24,6 @@ public:
     virtual void animate(const std::vector<sf::Texture>& textures, sf::Sprite& sprite, float animationTime, float deltaTime);
     void processVelocity(const int deltaX = 0, const int deltaY = 0);
     const std::vector<sf::Texture>& getTextureVector() const;
-
-    bool isAlive = true;
 
 protected:
     const float maxVelocity;

@@ -14,7 +14,8 @@ Particle::Particle(const std::vector<sf::Texture>& textures, const float maxVelo
     setSprite().setPosition(position);
 }
 
-const float Particle::calculateAngle(const sf::Vector2<float>&, const sf::RenderWindow&) {
+const float Particle::calculateAngle(const sf::Vector2<float>&, const sf::RenderWindow&)
+{
     return 0.f;
 }
 
